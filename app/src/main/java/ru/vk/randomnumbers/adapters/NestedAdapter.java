@@ -1,4 +1,4 @@
-package ru.vk.randomnumbers;
+package ru.vk.randomnumbers.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,14 +8,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import ru.vk.randomnumbers.R;
 
 public class NestedAdapter extends RecyclerView.Adapter<NestedAdapter.NestedViewHolder> {
 
-    private final List<Integer> numbers;
+    private final ArrayList<Integer> list = new ArrayList<>();
 
-    public NestedAdapter(List<Integer> data) {
-        numbers = data;
+    public void setData(List<Integer> data) {
+        list.clear();
+        list.addAll(data);
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -31,12 +36,12 @@ public class NestedAdapter extends RecyclerView.Adapter<NestedAdapter.NestedView
 
     @Override
     public void onBindViewHolder(@NonNull NestedViewHolder holder, int position) {
-        holder.textView.setText(String.valueOf(numbers.get(position)));
+        holder.textView.setText(String.valueOf(list.get(position)));
     }
 
     @Override
     public int getItemCount() {
-        return numbers.size();
+        return list.size();
     }
 
     protected static class NestedViewHolder extends RecyclerView.ViewHolder {
@@ -47,4 +52,5 @@ public class NestedAdapter extends RecyclerView.Adapter<NestedAdapter.NestedView
             textView = itemView.findViewById(R.id.tvNumber);
         }
     }
+
 }

@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.os.Bundle;
-import android.util.Log;
 
+import ru.vk.randomnumbers.adapters.ExternalAdapter;
 import ru.vk.randomnumbers.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
@@ -22,11 +22,7 @@ public class MainActivity extends AppCompatActivity {
         initView();
 
         MainViewModel viewModel = new ViewModelProvider(this).get(MainViewModel.class);
-        viewModel.createMatrix();
-        viewModel.liveData.observe(this, matrix -> {
-            Log.d("KOLUS", "onCreate: matrix = " + matrix.get(0));
-            externalAdapter.setData(matrix);
-        });
+        viewModel.liveData.observe(this, matrix -> externalAdapter.setData(matrix));
     }
 
     private void initView() {

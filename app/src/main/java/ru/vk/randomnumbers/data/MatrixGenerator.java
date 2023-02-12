@@ -1,28 +1,41 @@
 package ru.vk.randomnumbers.data;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import ru.vk.randomnumbers.IMainViewModel;
 
 public class MatrixGenerator implements IMatrix {
     private static final int SEC = 1000;
+    private static final int VERTICAL_LIST_SIZE = 100;
+    private static final int HORIZONTAL_LIST_SIZE = 10;
 
     private static final Random random = new Random();
 
-    private final IMainViewModel iMainViewModel;
-
-    private final List<List<Integer>> matrix;
+    private IMainViewModel iMainViewModel;
+    private final List<List<Integer>> matrix = new LinkedList<>();
 
     private Timer secondTimer;
 
-    public MatrixGenerator(IMainViewModel iMainViewModel, List<List<Integer>> data) {
+    public MatrixGenerator(IMainViewModel iMainViewModel) {
         this.iMainViewModel = iMainViewModel;
-        matrix = data;
+        for (int i = 0; i < VERTICAL_LIST_SIZE; i++) {
+            matrix.add(createHorizontalList());
+        }
         startTimer();
+    }
+
+    private List<Integer> createHorizontalList() {
+        List<Integer> horizontalList = new LinkedList<>();
+        for (int i = 0; i < HORIZONTAL_LIST_SIZE; i++) {
+            int randomValue = random.nextInt();
+            horizontalList.add(randomValue);
+        }
+        return horizontalList;
     }
 
     private void startTimer() {
@@ -45,53 +58,24 @@ public class MatrixGenerator implements IMatrix {
     };
 
     private List<List<Integer>> getUpdatedMatrix() {
-        List<List<Integer>> updatedMatrix = new LinkedList<>();
+        List<Integer> item = matrix.get(random.nextInt(matrix.size()));
+        Collections.swap(matrix, matrix.indexOf(item), random.nextInt(matrix.size()));
+
         for (int i = 0; i < matrix.size(); i++) {
-            List<Integer> list = matrix.get(i);
-            updatedMatrix.add(getUpdatedSmallList(list));
+            List<Integer> itemList = matrix.get(i);
+            Integer randomIndex = itemList.get(random.nextInt(itemList.size()));
+            Integer randomNumber = random.nextInt();
+            itemList.set(itemList.indexOf(randomIndex), randomNumber);
         }
 
-        int randCurrentPosition = random.nextInt(matrix.size());
-
-        List<Integer> currentList = updatedMatrix.get(randCurrentPosition);
-        updatedMatrix.remove(randCurrentPosition);
-
-        int randomFuturePosition = random.nextInt(matrix.size());
-
-        updatedMatrix.add(randomFuturePosition, currentList);
-        return updatedMatrix;
-    }
-
-    private List<Integer> getUpdatedSmallList(List<Integer> list) {
-        int randPosition = random.nextInt(list.size());
-        int randNumber = random.nextInt();
-
-        list.set(randPosition, randNumber);
-
-        return list;
-    }
-
-    public static List<List<Integer>> getRandomMatrix() {
-        List<List<Integer>> randomMassive = new LinkedList<>();
-
-        for (int i = 0; i < 100; i++) {
-            randomMassive.add(i, getRandomList());
-        }
-        return randomMassive;
-    }
-
-    private static LinkedList<Integer> getRandomList() {
-        LinkedList<Integer> randomList = new LinkedList<>();
-
-        for (int i = 0; i < 10; i++) {
-            randomList.add(random.nextInt());
-        }
-        return randomList;
+        return new ArrayList<>(matrix);
     }
 
     @Override
     public void stopGenerator() {
-        secondTimer.cancel();
+        if (secondTimer != null) secondTimer.cancel();
         secondTimer = null;
+
+        iMainViewModel = null;
     }
 }

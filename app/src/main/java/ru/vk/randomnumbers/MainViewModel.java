@@ -13,24 +13,7 @@ public class MainViewModel extends ViewModel implements IMainViewModel {
 
     private final MutableLiveData<List<List<Integer>>> mutableLiveData = new MutableLiveData<>();
     public LiveData<List<List<Integer>>> liveData = mutableLiveData;
-    private IMatrix matrixGenerator;
-
-    public void createMatrix() {
-        if (liveData.getValue() == null) {
-            List<List<Integer>> randomMatrix = MatrixGenerator.getRandomMatrix();
-            mutableLiveData.setValue(randomMatrix);
-        }
-        startMatrixGenerator();
-    }
-
-    private void startMatrixGenerator() {
-        matrixGenerator = new MatrixGenerator(this, liveData.getValue());
-    }
-
-    @Override
-    public void setValue(List<List<Integer>> data) {
-        mutableLiveData.setValue(data);
-    }
+    private IMatrix matrixGenerator = new MatrixGenerator(this);
 
     @Override
     public void postValue(List<List<Integer>> data) {
@@ -41,5 +24,6 @@ public class MainViewModel extends ViewModel implements IMainViewModel {
     protected void onCleared() {
         super.onCleared();
         matrixGenerator.stopGenerator();
+        matrixGenerator = null;
     }
 }

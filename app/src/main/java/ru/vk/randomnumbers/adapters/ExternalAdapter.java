@@ -1,7 +1,5 @@
-package ru.vk.randomnumbers;
+package ru.vk.randomnumbers.adapters;
 
-import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,36 +11,31 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.LinkedList;
 import java.util.List;
 
+import ru.vk.randomnumbers.R;
+
 public class ExternalAdapter extends RecyclerView.Adapter<ExternalAdapter.ExternalViewHolder> {
 
-    private List<List<Integer>> matrix;
-
-    private Context context;
+    private final List<List<Integer>> matrix = new LinkedList<>();
 
     public void setData(List<List<Integer>> data) {
-        matrix = data;
+        matrix.clear();
+        matrix.addAll(data);
         notifyDataSetChanged();
     }
 
     @NonNull
     @Override
     public ExternalViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        this.context = parent.getContext();
         int externalItem = R.layout.external_item;
 
-        LayoutInflater inflater = LayoutInflater.from(context);
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View itemView = inflater.inflate(externalItem, parent, false);
-
         return new ExternalViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ExternalViewHolder holder, int position) {
-        NestedAdapter nestedAdapter = new NestedAdapter(matrix.get(position));
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
-
-        holder.recyclerView.setLayoutManager(layoutManager);
-        holder.recyclerView.setAdapter(nestedAdapter);
+        holder.adapter.setData(matrix.get(position));
     }
 
     @Override
@@ -51,13 +44,18 @@ public class ExternalAdapter extends RecyclerView.Adapter<ExternalAdapter.Extern
     }
 
     protected static class ExternalViewHolder extends RecyclerView.ViewHolder {
-        private final RecyclerView recyclerView;
+
+        public NestedAdapter adapter = new NestedAdapter();
 
         public ExternalViewHolder(@NonNull View itemView) {
             super(itemView);
+            RecyclerView recyclerView = itemView.findViewById(R.id.rvNested);
 
-            recyclerView = itemView.findViewById(R.id.rvNested);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false);
+            recyclerView.setLayoutManager(layoutManager);
+
             recyclerView.setNestedScrollingEnabled(true);
+            recyclerView.setAdapter(adapter);
         }
     }
 
