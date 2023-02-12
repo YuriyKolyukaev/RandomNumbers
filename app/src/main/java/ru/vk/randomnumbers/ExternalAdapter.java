@@ -15,11 +15,11 @@ import java.util.List;
 
 public class ExternalAdapter extends RecyclerView.Adapter<ExternalAdapter.ExternalViewHolder> {
 
-    private List<LinkedList<Integer>> matrix;
+    private List<List<Integer>> matrix;
 
     private Context context;
 
-    public void setData(List<LinkedList<Integer>> data) {
+    public void setData(List<List<Integer>> data) {
         matrix = data;
         notifyDataSetChanged();
     }

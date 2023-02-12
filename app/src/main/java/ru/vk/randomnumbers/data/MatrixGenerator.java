@@ -8,17 +8,18 @@ import java.util.TimerTask;
 
 import ru.vk.randomnumbers.IMainViewModel;
 
-public class MatrixGenerator {
+public class MatrixGenerator implements IMatrix {
     private static final int SEC = 1000;
 
     private static final Random random = new Random();
 
     private final IMainViewModel iMainViewModel;
 
-    private Timer secondTimer;
-    private List<LinkedList<Integer>> matrix;
+    private final List<List<Integer>> matrix;
 
-    public MatrixGenerator(IMainViewModel iMainViewModel, List<LinkedList<Integer>> data) {
+    private Timer secondTimer;
+
+    public MatrixGenerator(IMainViewModel iMainViewModel, List<List<Integer>> data) {
         this.iMainViewModel = iMainViewModel;
         matrix = data;
         startTimer();
@@ -38,21 +39,21 @@ public class MatrixGenerator {
     private final TimerTask tick = new TimerTask() {
         @Override
         public void run() {
-            LinkedList<LinkedList<Integer>> updatedMatrix = getUpdatedMatrix();
+            List<List<Integer>> updatedMatrix = getUpdatedMatrix();
             iMainViewModel.postValue(updatedMatrix);
         }
     };
 
-    private LinkedList<LinkedList<Integer>> getUpdatedMatrix() {
-        LinkedList<LinkedList<Integer>> updatedMatrix = new LinkedList<>();
+    private List<List<Integer>> getUpdatedMatrix() {
+        List<List<Integer>> updatedMatrix = new LinkedList<>();
         for (int i = 0; i < matrix.size(); i++) {
-            LinkedList<Integer> list = matrix.get(i);
+            List<Integer> list = matrix.get(i);
             updatedMatrix.add(getUpdatedSmallList(list));
         }
 
         int randCurrentPosition = random.nextInt(matrix.size());
 
-        LinkedList<Integer> currentList = updatedMatrix.get(randCurrentPosition);
+        List<Integer> currentList = updatedMatrix.get(randCurrentPosition);
         updatedMatrix.remove(randCurrentPosition);
 
         int randomFuturePosition = random.nextInt(matrix.size());
@@ -61,7 +62,7 @@ public class MatrixGenerator {
         return updatedMatrix;
     }
 
-    private LinkedList<Integer> getUpdatedSmallList(LinkedList<Integer> list) {
+    private List<Integer> getUpdatedSmallList(List<Integer> list) {
         int randPosition = random.nextInt(list.size());
         int randNumber = random.nextInt();
 
@@ -70,8 +71,8 @@ public class MatrixGenerator {
         return list;
     }
 
-    public static LinkedList<LinkedList<Integer>> getRandomMatrix() {
-        LinkedList<LinkedList<Integer>> randomMassive = new LinkedList<>();
+    public static List<List<Integer>> getRandomMatrix() {
+        List<List<Integer>> randomMassive = new LinkedList<>();
 
         for (int i = 0; i < 100; i++) {
             randomMassive.add(i, getRandomList());
@@ -86,5 +87,11 @@ public class MatrixGenerator {
             randomList.add(random.nextInt());
         }
         return randomList;
+    }
+
+    @Override
+    public void stopGenerator() {
+        secondTimer.cancel();
+        secondTimer = null;
     }
 }

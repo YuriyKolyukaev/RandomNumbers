@@ -4,6 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 public interface IMainViewModel {
-    void setValue(List<LinkedList<Integer>> data);
-    void postValue(List<LinkedList<Integer>> data);
+    void setValue(List<List<Integer>> data);
+    void postValue(List<List<Integer>> data);
 }

@@ -8,13 +8,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.LinkedList;
+import java.util.List;
 
 public class NestedAdapter extends RecyclerView.Adapter<NestedAdapter.NestedViewHolder> {
 
-    private final LinkedList<Integer> numbers;
+    private final List<Integer> numbers;
 
-    public NestedAdapter(LinkedList<Integer> data) {
+    public NestedAdapter(List<Integer> data) {
         numbers = data;
     }
 
